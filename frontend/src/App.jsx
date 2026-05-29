@@ -1817,8 +1817,8 @@ export default function App() {
               {!selectedPostId ? (
                 <div className="bg-white rounded-2xl p-10 border border-stone-200 text-center flex flex-col items-center justify-center text-slate-400 shadow-sm">
                   <Eye size={28} className="text-slate-300 stroke-[1.5]" />
-                  <p className="text-xs font-bold mt-3">확인할 띵 카드를 탭하십시오</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">실시간 정산 상태, 24시간 연체 제재, 띵장의 위클리 수령 시간표가 노출됩니다!</p>
+                  <p className="text-xs font-bold mt-3">🍮 확인하고 싶은 띵 게시물을 선택해 주세요!</p>
+                  <p className="text-[10px] text-slate-400 mt-0.5">실시간 정산 현황부터 위클리 수령 시간표까지 한눈에 볼 수 있어요.</p>
                 </div>
               ) : !postDetail ? (
                 <div className="bg-white rounded-2xl p-10 border border-stone-200 flex justify-center py-16">
