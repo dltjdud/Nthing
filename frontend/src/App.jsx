@@ -26,7 +26,7 @@ import {
   Bell
 } from 'lucide-react';
 
-const API_BASE_URL = 'http://localhost:4000/api/v1';
+const API_BASE_URL = 'https://nthing.onrender.com/api/v1';
 
 const STANDARD_LOCATIONS = [
   "농장문", "누리관문", "텍문", "나리문", "동문", "정문", "수의대문", "쪽문", "조은문", "솔로문",
