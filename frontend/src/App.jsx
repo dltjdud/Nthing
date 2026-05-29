@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ShoppingBag,
+  ShoppingCart,
   MapPin,
   Users,
   Search,
@@ -700,7 +700,7 @@ export default function App() {
   const handleCreatePost = async (e) => {
     e.preventDefault();
     if (!newPost.title.trim()) return alert("방 제목을 입력해주세요!");
-    if (newPost.locations.length === 0) return alert("최소 1개 이상의 수령 지정장소를 다중선택해 주세요!");
+    if (newPost.locations.length === 0) return alert("최소 1개 이상의 수령 장소를 선택해 주세요!");
     if (!newPost.bankAccount.trim()) return alert("정산용 호스트의 계좌번호를 입력해주세요!");
     if (!newPost.hostRealName.trim()) return alert("예금주 실명을 작성해 주세요 (성명 마스킹 보안처리에 필요)!");
 
@@ -1333,7 +1333,7 @@ export default function App() {
         {/* Banner header inside login page */}
         <div className="sm:mx-auto sm:w-full sm:max-w-md text-center space-y-3 mb-6">
           <div className="h-16 w-16 bg-primary-500 rounded-3xl flex items-center justify-center text-primary-900 shadow-xl shadow-primary-500/20 mx-auto border border-primary-400">
-            <ShoppingBag size={32} className="stroke-[2.5]" />
+            <ShoppingCart size={32} className="stroke-[2.5]" />
           </div>
           <div>
             {/* 텍스트 색상을 white에서 브라운(primary-900)으로 변경 */}
@@ -1475,11 +1475,11 @@ export default function App() {
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200 py-4 px-6 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 bg-primary-500 rounded-2xl flex items-center justify-center text-white shadow-md shadow-primary-500/20">
-            <ShoppingBag size={20} className="stroke-[2.5]" />
+            <ShoppingCart size={20} className="stroke-[2.5]" />
           </div>
           <div>
             <h1 className="text-xl font-black tracking-tight text-neutral-900 font-sans flex items-center gap-1">
-              N Thing?! <span className="text-primary-500 font-black text-2xl font-serif">몇 띵?!</span>
+              N Thing?! <span className="text-primary-500 font-black text-2xl font-sans">몇 띵?!</span>
             </h1>
             <p className="text-[9px] font-bold text-slate-400 -mt-1 tracking-widest uppercase">배송비 아까워서 장바구니만 넣었다 뺐다 하고 있을 때</p>
           </div>
@@ -1594,7 +1594,7 @@ export default function App() {
                     <MapPin size={18} className="text-primary-500 shrink-0" />
                     <span className="text-slate-800 text-sm font-bold truncate">
                       {selectedLocations.length === 0
-                        ? "🏫 전체 수령 지정장소 필터링"
+                        ? "🍮 띵 물품 수령 장소 필터링"
                         : selectedLocations.length === 1
                           ? `📍 ${selectedLocations[0]}`
                           : `📍 ${selectedLocations[0]} 외 ${selectedLocations.length - 1}곳`
@@ -1609,7 +1609,7 @@ export default function App() {
                 {isLocationDropdownOpen && (
                   <div className="absolute left-0 right-0 mt-2 bg-white border border-stone-200 rounded-2xl shadow-xl z-30 p-4 animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="flex justify-between items-center pb-2 mb-2 border-b border-stone-100">
-                      <span className="text-xs font-black text-slate-500">📍 수령 희망 장소 (다중선택)</span>
+                      <span className="text-xs font-black text-slate-500">📍 수령 희망 장소 (다중선택 가능)</span>
                       {selectedLocations.length > 0 && (
                         <button
                           onClick={(e) => {
@@ -1699,12 +1699,12 @@ export default function App() {
             <section className="lg:col-span-2 space-y-4">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg font-black text-slate-900 font-sans flex items-center gap-2">
-                  🔥 진행 중인 띵 (공동구매) 리스트
+                  🔥 진행 중인 띵 리스트
                   <span className="bg-primary-50 text-primary-500 text-xs font-extrabold px-2 py-0.5 rounded-full border border-primary-200">
                     {posts.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase())).length}개
                   </span>
                 </h2>
-                <p className="text-xs text-slate-400">다중선택 위치기반 매칭 실시간 필터링 적용</p>
+                <p className="text-xs text-slate-400"></p>
               </div>
 
               {loading ? (
@@ -1716,7 +1716,7 @@ export default function App() {
                 <div className="bg-white rounded-2xl p-16 border border-stone-200 flex flex-col items-center justify-center text-center">
                   <div className="h-16 w-16 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 mb-4 text-3xl">🏜️</div>
                   <h3 className="font-bold text-slate-800 text-base">선택된 카테고리/위치의 띵이 없습니다.</h3>
-                  <p className="text-xs text-slate-400 mt-1 max-w-sm">원하는 상품 분담 모집글이 없다면 직접 다중 수령장소를 선점하여 띵을 최초로 개설해 보세요!</p>
+                  <p className="text-xs text-slate-400 mt-1 max-w-sm">원하는 띵 모집글이 없다면 직접 띵장이 되어 띵을 최초로 만들어 보세요!</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1812,7 +1812,7 @@ export default function App() {
 
             {/* Dynamic Detail inspector panel */}
             <section className="lg:col-span-1 space-y-4">
-              <h2 className="text-lg font-black text-slate-900 font-sans">🔎 선택된 몇띵?! 상세</h2>
+              <h2 className="text-lg font-black text-slate-900 font-sans">🔎 선택된 띵</h2>
 
               {!selectedPostId ? (
                 <div className="bg-white rounded-2xl p-10 border border-stone-200 text-center flex flex-col items-center justify-center text-slate-400 shadow-sm">
@@ -1878,7 +1878,7 @@ export default function App() {
                   {/* Basic Post Meta details */}
                   <div className="space-y-2 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-400 font-medium">띵장 (개설자)</span>
+                      <span className="text-slate-400 font-medium">띵장</span>
                       <span className="font-bold text-slate-700">👑 {postDetail.hostNickname}</span>
                     </div>
                     <div className="flex justify-between">
@@ -2229,7 +2229,7 @@ export default function App() {
                   총 {notifications.length}개
                 </span>
               </h2>
-              <p className="text-xs text-slate-400 mt-1">참여 중인 공동구매의 매칭 확정, 무산, 물품 도착 등 모든 진행 상황을 모니터링합니다.</p>
+              <p className="text-xs text-slate-400 mt-1">참여 중인 공동구매의 매칭 확정, 무산, 물품 도착 등 모든 진행 상황을 확인할 수 있습니다.</p>
             </div>
             {notifications.some(n => n.read === 0) && (
               <button
@@ -2250,7 +2250,7 @@ export default function App() {
             <div className="bg-white rounded-3xl p-16 border border-stone-200 text-center flex flex-col items-center justify-center text-slate-400 shadow-sm">
               <div className="h-16 w-16 bg-stone-100 rounded-full flex items-center justify-center text-stone-400 mb-4 text-3xl">📭</div>
               <h3 className="font-bold text-slate-800 text-base">수신된 알림 내역이 존재하지 않습니다.</h3>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm">공동구매 띵에 참가하거나 방을 만들면 상태 변화 알림이 실시간 수신됩니다.</p>
+              <p className="text-xs text-slate-400 mt-1 max-w-sm">띵원이나 띵장이 되면 참여한 띵에 대한 알림이 실시간 수신됩니다.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -2361,7 +2361,7 @@ export default function App() {
                     {currentUser.provider?.toUpperCase()} 소셜 로그인 계정
                   </span>
                 </div>
-                <p className="text-xs text-slate-400 mt-0.5"> 띵 해요</p>
+                <p className="text-xs text-slate-400 mt-0.5"> 나의 몇 띵?! 프로필</p>
               </div>
             </div>
 
@@ -2438,7 +2438,7 @@ export default function App() {
 
               {joinedPosts.length === 0 ? (
                 <div className="bg-white rounded-2xl p-8 border border-stone-200 text-center text-xs text-slate-400 italic">
-                  내가 참여한 띵 내역이 비어있습니다. 띵에 참여해서 배송비를 절약해 보세요!
+                  띵에 참여하지 않았습니다. 띵에 참여해서 배송비를 절약해 보세요!
                 </div>
               ) : (
                 <div className="space-y-3">
