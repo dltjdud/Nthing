@@ -1815,12 +1815,18 @@ export default function App() {
               <h2 className="text-lg font-black text-slate-900 font-sans">🔎 선택된 띵</h2>
 
               {!selectedPostId ? (
-                <div className="text-[50px] text-slate-300/40 mb-4 flex justify-center drop-shadow-sm cursor-default">
-                  <div className="text-[50px] text-slate-300/40 mb-4 flex justify-center drop-shadow-sm cursor-default">
-                    🐾
+                <div className="flex flex-col items-center justify-center w-full h-full text-center py-10 px-4">
+                  <div className="bg-slate-50 border border-dashed border-slate-200 rounded-2xl p-8 max-w-sm w-full flex flex-col items-center justify-center shadow-sm">
+                    <div className="text-[50px] text-slate-300/50 mb-3 drop-shadow-sm cursor-default select-none">
+                      🐾
+                    </div>
+                    <p className="text-sm font-bold text-slate-600">
+                      🍮 확인하고 싶은 띵 게시물을 선택해 주세요!
+                    </p>
+                    <p className="text-[10px] text-slate-400 mt-1.5 break-keep leading-relaxed">
+                      실시간 정산 현황부터 위클리 수령 시간표까지<br />한눈에 볼 수 있어요.
+                    </p>
                   </div>
-                  <p className="text-xs font-bold mt-3">🍮 확인하고 싶은 띵 게시물을 선택해 주세요!</p>
-                  <p className="text-[10px] text-slate-400 mt-0.5">실시간 정산 현황부터 위클리 수령 시간표까지 한눈에 볼 수 있어요.</p>
                 </div>
               ) : !postDetail ? (
                 <div className="bg-white rounded-2xl p-10 border border-stone-200 flex justify-center py-16">
