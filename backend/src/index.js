@@ -488,7 +488,7 @@ app.get('/api/v1/posts', async (req, res) => {
     `;
 
     const params = [];
-    const conditions = [];
+    const conditions = ["p.status != 'COMPLETED'"];
 
     if (category) {
       conditions.push("p.category = ?");
@@ -924,6 +924,46 @@ app.post('/api/v1/posts/:postId/arrive', authenticateToken, checkSuspension, asy
     return res.json({ message: "물품도착 알림이 전송되었습니다." });
 
   } catch (error) {
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// POST /api/v1/posts/{postId}/complete -> Host marks group-buying as COMPLETED
+app.post('/api/v1/posts/:postId/complete', authenticateToken, checkSuspension, async (req, res) => {
+  const { postId } = req.params;
+  const hostId = req.user.id;
+
+  try {
+    const db = await getDb();
+
+    const post = await db.get("SELECT hostId, status, title FROM posts WHERE id = ?", [postId]);
+    if (!post) return res.status(404).json({ error: "Post not found" });
+
+    if (post.hostId !== hostId) {
+      return res.status(403).json({ error: "호스트 전용 권한입니다." });
+    }
+
+    if (post.status !== 'ARRIVED') {
+      return res.status(400).json({ error: "공동구매 방이 'ARRIVED'(물품 도착) 상태여야 완료할 수 있습니다." });
+    }
+
+    await db.run("BEGIN TRANSACTION");
+    await db.run("UPDATE posts SET status = 'COMPLETED' WHERE id = ?", [postId]);
+
+    // Fetch participants of this post (excluding host) to generate notifications
+    const members = await db.all("SELECT DISTINCT userId FROM orders WHERE postId = ? AND userId != ?", [postId, hostId]);
+    for (const member of members) {
+      const completionTitle = `[공구 종료] ${post.title}`;
+      const completionContent = `몇 띵?!으로 배송비를 절약하셨습니다. 앞으로도 몇 띵?!을 이용해 보세요\n해당 공구 게시물은 마이페이지에서만 확인가능합니다`;
+      await createNotification(db, member.userId, completionTitle, completionContent, 'COMPLETED');
+    }
+
+    await db.run("COMMIT");
+
+    return res.json({ message: "공구 물품 전달 완료 처리되었습니다." });
+
+  } catch (error) {
+    console.error("Complete Post Error:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 });

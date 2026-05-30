@@ -302,7 +302,7 @@ export default function App() {
       const res = await fetch(url);
       if (!res.ok) throw new Error('서버 연결 실패');
       const data = await res.json();
-      setPosts(data);
+      setPosts(data.filter(p => p.status !== 'COMPLETED'));
     } catch (err) {
       console.warn("Backend server offline, switching to N Thing?! local emulation mode.");
       setBackendError('몇띵?! 실시간 백엔드 서버(Port 4000) 오프라인 상태입니다. 로컬 프론트 에뮬레이터로 작동됩니다.');
@@ -349,9 +349,10 @@ export default function App() {
         }
       ];
       localStorage.setItem('something_posts', JSON.stringify(defaults));
-      setPosts(defaults);
+      setPosts(defaults.filter(p => p.status !== 'COMPLETED'));
     } else {
       let list = JSON.parse(localPosts);
+      list = list.filter(p => p.status !== 'COMPLETED');
       if (selectedCategory) list = list.filter(p => p.category === selectedCategory);
       if (selectedLocations && selectedLocations.length > 0) {
         list = list.filter(p => p.locations.some(loc => selectedLocations.includes(loc)));
@@ -1220,6 +1221,48 @@ export default function App() {
     }
   };
 
+  const handleMarkCompleted = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/posts/${selectedPostId}/complete`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${jwtToken}` }
+      });
+      if (res.ok) {
+        alert("공구 물품 전달 완료 처리되었습니다.");
+        fetchPostDetail(selectedPostId);
+        fetchPosts();
+      }
+    } catch (err) {
+      const localPosts = JSON.parse(localStorage.getItem('something_posts') || '[]');
+      const postIdx = localPosts.findIndex(p => p.id === selectedPostId);
+      if (postIdx !== -1) {
+        localPosts[postIdx].status = 'COMPLETED';
+        localStorage.setItem('something_posts', JSON.stringify(localPosts));
+
+        // Generate completion notifications centrally
+        const members = JSON.parse(localStorage.getItem(`something_members_${selectedPostId}`) || '[]');
+        const allNotifs = JSON.parse(localStorage.getItem('something_notifs') || '[]');
+        members.forEach(m => {
+          if (m.userId === currentUser.id) return;
+          allNotifs.unshift({
+            id: `notif_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
+            userId: m.userId,
+            title: `[공구 종료] ${localPosts[postIdx].title}`,
+            content: "몇 띵?!으로 배송비를 절약하셨습니다. 앞으로도 몇 띵?!을 이용해 보세요\n해당 공구 게시물은 마이페이지에서만 확인가능합니다",
+            type: 'COMPLETED',
+            read: 0,
+            createdAt: Date.now()
+          });
+        });
+        localStorage.setItem('something_notifs', JSON.stringify(allNotifs));
+
+        alert("로컬 에뮬레이션: 공구 물품 전달 완료!");
+        fetchPostDetail(selectedPostId);
+        fetchPosts();
+      }
+    }
+  };
+
   const handleToggleTimetableSlot = (day, time) => {
     // Only host can modify their slots list
     if (postDetail.hostId !== currentUser?.id) return;
@@ -1920,6 +1963,16 @@ export default function App() {
                             <Bell size={10} /> 물품도착 알림전송
                           </button>
                         )}
+
+                        {/* Host Completed trigger button */}
+                        {postDetail.hostId === currentUser?.id && postDetail.status === 'ARRIVED' && (
+                          <button
+                            onClick={handleMarkCompleted}
+                            className="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-0.5 shadow-sm"
+                          >
+                            공구 물품 전달 완료
+                          </button>
+                        )}
                       </div>
                     </div>
 
@@ -2299,7 +2352,15 @@ export default function App() {
                     icon: '📦',
                     label: '물품 도착'
                   };
-
+                } else if (notif.type === 'COMPLETED') {
+                  typeStyles = {
+                    border: isUnread ? 'border-emerald-500 shadow-sm ring-1 ring-emerald-500/5' : 'border-stone-250',
+                    bg: isUnread ? 'bg-emerald-50/20' : 'bg-stone-50/70 opacity-75',
+                    badgeBg: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                    iconBg: 'bg-emerald-100 text-emerald-600',
+                    icon: '✅',
+                    label: '공구 종료'
+                  };
                 }
 
                 return (

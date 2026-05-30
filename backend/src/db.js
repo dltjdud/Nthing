@@ -104,7 +104,7 @@ export async function getDb() {
       userId TEXT NOT NULL,
       title TEXT NOT NULL,
       content TEXT NOT NULL,
-      type TEXT NOT NULL CHECK(type IN ('CONFIRMED', 'CANCELLATION', 'ARRIVAL', 'REFUND', 'GENERAL')),
+      type TEXT NOT NULL CHECK(type IN ('CONFIRMED', 'CANCELLATION', 'ARRIVAL', 'REFUND', 'GENERAL', 'COMPLETED')),
       read INTEGER DEFAULT 0,
       createdAt INTEGER NOT NULL,
       FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
