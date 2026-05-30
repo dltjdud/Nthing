@@ -102,7 +102,6 @@ export default function App() {
   const [authUsername, setAuthUsername] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   const [authNickname, setAuthNickname] = useState('');
-  const [authRefundAccount, setAuthRefundAccount] = useState('');
   const [authError, setAuthError] = useState('');
 
   // Notifications State
@@ -485,8 +484,7 @@ export default function App() {
         body: JSON.stringify({
           username: authUsername,
           password: authPassword,
-          nickname: authNickname,
-          refundAccount: authRefundAccount
+          nickname: authNickname
         })
       });
       const data = await res.json();
@@ -499,7 +497,6 @@ export default function App() {
         setAuthUsername('');
         setAuthPassword('');
         setAuthNickname('');
-        setAuthRefundAccount('');
         setAuthError('');
         alert('회원가입 및 로그인이 성공적으로 처리되었습니다.');
       } else {
@@ -522,7 +519,7 @@ export default function App() {
         penaltyCount: 0,
         status: 'ACTIVE',
         suspendedUntil: 0,
-        refundAccount: authRefundAccount,
+        refundAccount: '',
         penaltyFlag: 0,
         createdAt: Date.now()
       };
@@ -538,7 +535,6 @@ export default function App() {
       setAuthUsername('');
       setAuthPassword('');
       setAuthNickname('');
-      setAuthRefundAccount('');
       setAuthError('');
       alert('로컬 모드: 회원가입 및 로그인 성공');
     }
@@ -1457,17 +1453,7 @@ export default function App() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-extrabold text-slate-400 mb-1.5">정산/환불용 은행 및 계좌번호</label>
-                  <input
-                    type="text"
-                    className="w-full bg-slate-800/80 border border-slate-700/80 rounded-xl px-4 py-3 text-xs focus:ring-2 focus:ring-primary-500/30 focus:outline-none text-white placeholder-slate-500 font-bold"
-                    placeholder="예: 신한은행 110-123-456789"
-                    value={authRefundAccount}
-                    onChange={(e) => setAuthRefundAccount(e.target.value)}
-                  />
-                  <p className="text-[10px] text-slate-500 mt-1 font-medium">⚠️ 공구 자동 방출/일부 무산 시 환불금을 돌려받으실 수 있는 계좌 정보입니다.</p>
-                </div>
+
               </>
             )}
 
@@ -1975,7 +1961,7 @@ export default function App() {
                         )}
 
                         {/* Host Non-payer trigger button */}
-                        {postDetail.hostId === currentUser?.id && ['CONFIRMED', 'ARRIVED', 'COMPLETED'].includes(postDetail?.status) && (
+                        {postDetail.hostId === currentUser?.id && postDetail?.status === 'CONFIRMED' && (
                           <button
                             onClick={() => setIsRescueModalOpen(true)}
                             className="bg-red-500 hover:bg-red-600 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-0.5 shadow-sm"
