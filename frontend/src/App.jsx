@@ -1973,6 +1973,16 @@ export default function App() {
                             공구 물품 전달 완료
                           </button>
                         )}
+
+                        {/* Host Non-payer trigger button */}
+                        {postDetail.hostId === currentUser?.id && ['CONFIRMED', 'ARRIVED', 'COMPLETED'].includes(postDetail?.status) && (
+                          <button
+                            onClick={() => setIsRescueModalOpen(true)}
+                            className="bg-red-500 hover:bg-red-600 text-white font-bold text-[10px] px-2.5 py-1.5 rounded-lg transition-colors flex items-center gap-0.5 shadow-sm"
+                          >
+                            미입금자 발생!
+                          </button>
+                        )}
                       </div>
                     </div>
 
